@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      #catFactsColumn, #userMessagesColumn {
+        padding: 10px;
+        border-radius: 8px;
+        overflow-y: auto;
+        width: fit-content; 
+      }
+
+      .chat-bubble {
+        padding: 8px;
+        margin: 8px;
+        border-radius: 8px;
+        list-style: none;
+      }
+
+      .user-message {
+        background-color: #a8e6cf;
+        align-self: flex-end;
+      }
+
+      .cat-fact-message {
+        background-color: #e0e0e0;
+        align-self: flex-start;
+      }
+    </style>
+  </head>
+  <body style="background-color: #294B29;">
+    <div id="app">
+      <div class="text-center text-white">
+      <h1 class="font-bold">SIGN UP FOR CAT FACTS</h1>
+      <h1 class="font-bold">TEXT MESSAGES</h1>
+      <p>DELIVERY OF YOUR MESSAGES BEGINS IMMEDIATELY</p>
+      </div>
+      <div class="flex justify-center items-center">
+        <img src="src/assets/cat.png" alt="cat" class="w-36 flex items-center justify-center">
+        </div>
+      <div style="display: flex; justify-content: center;">
+        <div style="width: 50%; background-color: #50623A;">
+          <h1 style=" padding-left: 5px; background-color: white; font-weight: bold;">
+            Send Cat Facts!
+          </h1>
+
+          <div id="userMessagesColumn" class="flex flex-col-reverse">
+            <ul id="userMessagesList"></ul>
+          </div>
+
+          <div id="catFactsColumn" class="flex flex-col-reverse">
+            <ul id="catFactsList"></ul>
+          </div>
+          <form class="max-w-sm mx-auto">
+            <div>
+                <label for="first_name" class="block mb-2 text-sm font-medium text-white dark:text-white">chat cat</label>
+                <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="input your text" required>
+            </div>
+            
+          <div class="text-center">
+            <button type="button" id="startSendingButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Send
+            </button>
+          </div>
+          
+        </form>
+        
+        </div>
+      </div>
+    </div>
+    <!-- <script type="module" src="/src/main.js"></script> -->
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const startSendingButton = document.querySelector('#startSendingButton');
+        const catFactsColumn = document.getElementById('catFactsColumn');
+        const catFactsList = document.getElementById('catFactsList');
+        const userMessagesColumn = document.getElementById('userMessagesColumn');
+        const userMessagesList = document.getElementById('userMessagesList');
+
+        startSendingButton.addEventListener('click', async function () {
+          try {
+            const userMessage = document.getElementById('first_name').value;
+
+            if (!userMessage) {
+              alert('Please fill in the message field.');
+              return;
+            }
+            const userMessageItem = document.createElement('li');
+            userMessageItem.textContent = userMessage;
+
+            userMessageItem.classList.add('chat-bubble');
+            userMessageItem.classList.add('user-message');
+
+            userMessagesList.appendChild(userMessageItem);
+
+            const response = await axios.get('https://catfact.ninja/fact');
+            const catFact = response.data.fact;
+
+            const catFactItem = document.createElement('li');
+            catFactItem.textContent = catFact;
+
+            catFactItem.classList.add('chat-bubble');
+            catFactItem.classList.add('cat-fact-message');
+
+            catFactsList.appendChild(catFactItem);
+
+            catFactsColumn.style.display = 'block';
+            userMessagesColumn.style.display = 'block';
+
+            console.log('User Message:', userMessage);
+            console.log('Cat Fact:', catFact);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        });
+      });
+    </script>
+    
+    
+  </body>
+</html>
